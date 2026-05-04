@@ -39,73 +39,64 @@
   .note { font-size: 11px; color: #9AA4AF; margin: 8px 16px 0; line-height: 1.6; }
   footer { text-align: center; font-size: 11px; color: #AAB4BF; padding: 24px 16px; }
 
-  /* ── スマホ用固定パネル（横スクロール型） ── */
+  /* ── スマホ用固定パネル ── */
   #touchPanel {
     display: none;
     position: fixed;
     bottom: 0; left: 0; right: 0;
+    /* 画面高さの30%以内に収める */
+    max-height: 30vh;
     background: #1B2A3B;
     border-top: 3px solid #378ADD;
     z-index: 100;
-    padding: 8px 0 12px;
-  }
-
-  /* 日付行 */
-  #touchPanel .panel-date {
-    font-size: 13px;
-    font-weight: 700;
-    color: #7EC8F4;
-    padding: 0 14px 6px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    margin-bottom: 6px;
-  }
-
-  /* 横スクロールするデータ行 */
-  #touchPanel .panel-scroll {
-    display: flex;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    gap: 0;
-    padding: 0 14px 4px;
-    scrollbar-width: none; /* Firefox */
-  }
-  #touchPanel .panel-scroll::-webkit-scrollbar { display: none; } /* Chrome */
-
-  /* 各データブロック */
-  #touchPanel .panel-item {
-    display: flex;
+    /* パネル全体を縦方向flexにして内部スクロールを制御 */
+    display: none;
     flex-direction: column;
-    align-items: center;
-    min-width: 80px;
-    padding: 4px 10px;
-    border-right: 1px solid rgba(255,255,255,0.08);
+  }
+
+  /* 日付ヘッダー：常に見える・縮まない */
+  #touchPanel .panel-header {
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
   }
-  #touchPanel .panel-item:last-child { border-right: none; }
-  #touchPanel .panel-label {
-    font-size: 10px;
-    color: #7EC8F4;
-    margin-bottom: 3px;
-    white-space: nowrap;
-  }
-  #touchPanel .panel-value {
+  #touchPanel .panel-date {
     font-size: 14px;
     font-weight: 700;
-    color: #fff;
-    white-space: nowrap;
+    color: #7EC8F4;
   }
-  #touchPanel .panel-unit {
-    font-size: 9px;
-    color: #A0B4C8;
-    margin-top: 1px;
-  }
-
-  /* スクロールヒント */
   #touchPanel .panel-hint {
     font-size: 10px;
     color: #4A6880;
-    text-align: center;
-    padding-top: 4px;
+  }
+
+  /* データ行：内部スクロール */
+  #touchPanel .panel-body {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    flex: 1;
+    padding: 4px 0 8px;
+  }
+
+  #touchPanel .panel-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  #touchPanel .panel-row:last-child { border-bottom: none; }
+  #touchPanel .panel-label {
+    font-size: 13px;
+    color: #A0B4C8;
+  }
+  #touchPanel .panel-value {
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
   }
 
   @media (pointer: coarse) {
@@ -156,17 +147,17 @@
 <p class="note">※ 点線は水揚げのなかった日の補間。スレ・次品・0.5k上は折れ線から除外。</p>
 <footer>石巻魚市場 ギンザケ日計表 © 2026</footer>
 
-<!-- スマホ用固定パネル（横スクロール型） -->
+<!-- スマホ用固定パネル -->
 <div id="touchPanel">
-  <div class="panel-date" id="panelDate">📅 日付をタップしてください</div>
-  <div class="panel-scroll" id="panelScroll">
-    <div class="panel-item">
-      <div class="panel-label">タップして</div>
-      <div class="panel-value">—</div>
-      <div class="panel-unit">データ表示</div>
+  <div class="panel-header">
+    <div class="panel-date" id="panelDate">📅 日付をタップ</div>
+    <div class="panel-hint" id="panelHint"></div>
+  </div>
+  <div class="panel-body" id="panelBody">
+    <div class="panel-row">
+      <span class="panel-label">グラフの日付をタップするとデータが表示されます</span>
     </div>
   </div>
-  <div class="panel-hint" id="panelHint"></div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
@@ -193,7 +184,10 @@ const rawData = {
 };
 
 const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-if(isTouch) document.getElementById('touchPanel').style.display = 'block';
+if(isTouch) {
+  const panel = document.getElementById('touchPanel');
+  panel.style.display = 'flex';
+}
 
 function updatePanel(index) {
   const date = allDates[index];
@@ -202,26 +196,24 @@ function updatePanel(index) {
 
   const items = [];
   if(d) {
-    items.push({label:'合計数量', value: parseFloat((d.qty/1000).toFixed(1)), unit:'t'});
-    items.push({label:'全体平均', value: d.avg.toLocaleString(), unit:'円/kg'});
-    if(d.s2k)  items.push({label:'2k上',   value: d.s2k.toLocaleString(), unit:'円/kg'});
-    if(d.s15)  items.push({label:'1.5k上', value: d.s15.toLocaleString(), unit:'円/kg'});
-    if(d.s1)   items.push({label:'1k上',   value: d.s1.toLocaleString(),  unit:'円/kg'});
+    items.push(['合計数量', parseFloat((d.qty/1000).toFixed(1))+'t']);
+    items.push(['全体平均単価', d.avg.toLocaleString()+'円/kg']);
+    if(d.s2k)  items.push(['2k上',   d.s2k.toLocaleString()+'円/kg']);
+    if(d.s15)  items.push(['1.5k上', d.s15.toLocaleString()+'円/kg']);
+    if(d.s1)   items.push(['1k上',   d.s1.toLocaleString()+'円/kg']);
   } else {
-    items.push({label:'水揚げなし', value:'—', unit:''});
+    items.push(['', '水揚げなし']);
   }
 
-  document.getElementById('panelScroll').innerHTML = items.map(item=>
-    `<div class="panel-item">
-      <div class="panel-label">${item.label}</div>
-      <div class="panel-value">${item.value}</div>
-      <div class="panel-unit">${item.unit}</div>
+  // 項目数が多い場合スクロールヒント表示
+  document.getElementById('panelHint').textContent = items.length > 3 ? '↕ スクロール' : '';
+
+  document.getElementById('panelBody').innerHTML = items.map(([l,v])=>
+    `<div class="panel-row">
+      <span class="panel-label">${l}</span>
+      <span class="panel-value">${v}</span>
     </div>`
   ).join('');
-
-  // 項目が多い場合のみスワイプヒントを表示
-  document.getElementById('panelHint').textContent =
-    items.length > 3 ? '← 横にスワイプして全項目を確認 →' : '';
 }
 
 const qtys = allDates.map(d=>rawData[d]?parseFloat((rawData[d].qty/1000).toFixed(1)):null);
