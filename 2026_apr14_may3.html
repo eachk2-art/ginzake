@@ -2,7 +2,8 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- user-scalable=no でページ全体のピンチズームを無効化 -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
 <title>ギンザケ日計表 2026年4/14〜5/3</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -39,7 +40,7 @@
   .note { font-size: 11px; color: #9AA4AF; margin: 8px 16px 0; line-height: 1.6; }
   footer { text-align: center; font-size: 11px; color: #AAB4BF; padding: 24px 16px; }
 
-  /* ── スマホ用固定パネル（画面下部に固定） ── */
+  /* ── スマホ用固定パネル ── */
   #touchPanel {
     display: none;
     position: fixed;
@@ -49,7 +50,7 @@
     padding: 10px 16px 16px;
     border-top: 3px solid #378ADD;
     z-index: 100;
-    font-size: 13px; /* グラフ拡大率に連動しない固定サイズ */
+    font-size: 13px;
   }
   #touchPanel .panel-date {
     font-size: 14px;
@@ -70,14 +71,8 @@
   }
   #touchPanel .panel-label { color: #A0B4C8; font-size: 12px; }
   #touchPanel .panel-value { font-weight: 600; font-size: 12px; }
-  #touchPanel .panel-hint {
-    font-size: 10px;
-    color: #4A6880;
-    text-align: center;
-    margin-top: 6px;
-  }
+  #touchPanel .panel-hint { font-size: 10px; color: #4A6880; text-align: center; margin-top: 6px; }
 
-  /* スマホのときグラフカード下に余白（パネル分） */
   @media (pointer: coarse) {
     body { padding-bottom: 150px; }
   }
@@ -130,7 +125,7 @@
 <div id="touchPanel">
   <div class="panel-date" id="panelDate">📅 日付をタップしてください</div>
   <div class="panel-grid" id="panelGrid"></div>
-  <div class="panel-hint">タップした日のデータを表示 ／ スクロール・拡大は自由にできます</div>
+  <div class="panel-hint">タップした日のデータを表示</div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
@@ -156,11 +151,9 @@ const rawData = {
   '5/2' :{qty:7574,  avg:824,  s2k:861,  s15:881,  s1:733},
 };
 
-// タッチデバイス判定
 const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 if(isTouch) document.getElementById('touchPanel').style.display = 'block';
 
-// パネル更新
 function updatePanel(index) {
   const date = allDates[index];
   const d = rawData[date];
@@ -169,9 +162,9 @@ function updatePanel(index) {
   if(d) {
     items.push(['合計数量', parseFloat((d.qty/1000).toFixed(1))+'t']);
     items.push(['全体平均', d.avg.toLocaleString()+'円/kg']);
-    if(d.s2k)  items.push(['2k上', d.s2k.toLocaleString()+'円/kg']);
-    if(d.s15)  items.push(['1.5k上', d.s15.toLocaleString()+'円/kg']);
-    if(d.s1)   items.push(['1k上', d.s1.toLocaleString()+'円/kg']);
+    if(d.s2k) items.push(['2k上', d.s2k.toLocaleString()+'円/kg']);
+    if(d.s15) items.push(['1.5k上', d.s15.toLocaleString()+'円/kg']);
+    if(d.s1)  items.push(['1k上', d.s1.toLocaleString()+'円/kg']);
   } else {
     items.push(['水揚げなし', '—']);
   }
@@ -180,15 +173,19 @@ function updatePanel(index) {
   ).join('');
 }
 
+const qtys = allDates.map(d=>rawData[d]?parseFloat((rawData[d].qty/1000).toFixed(1)):null);
+const avg  = allDates.map(d=>rawData[d]?rawData[d].avg:null);
+const s2k  = allDates.map(d=>rawData[d]?rawData[d].s2k:null);
+const s15  = allDates.map(d=>rawData[d]?rawData[d].s15:null);
+const s1   = allDates.map(d=>rawData[d]?rawData[d].s1:null);
+
 function lineDs(label,data,color){
   return{label,data,type:'line',borderColor:color,backgroundColor:color,borderWidth:2.5,
-    pointRadius:data.map(v=>v!==null?5:0),
-    pointHitRadius:20,
+    pointRadius:data.map(v=>v!==null?5:0),pointHitRadius:20,
     pointBackgroundColor:color,spanGaps:true,
     segment:{borderDash:(ctx)=>{
       if(data[ctx.p0DataIndex]===null||data[ctx.p1DataIndex]===null)return[6,4];return[];
-    }},
-    tension:0,yAxisID:'yRight',order:1};
+    }},tension:0,yAxisID:'yRight',order:1};
 }
 
 function buildDatasets(){
@@ -201,20 +198,14 @@ function buildDatasets(){
   ];
 }
 
-const qtys = allDates.map(d=>rawData[d]?parseFloat((rawData[d].qty/1000).toFixed(1)):null);
-const avg  = allDates.map(d=>rawData[d]?rawData[d].avg:null);
-const s2k  = allDates.map(d=>rawData[d]?rawData[d].s2k:null);
-const s15  = allDates.map(d=>rawData[d]?rawData[d].s15:null);
-const s1   = allDates.map(d=>rawData[d]?rawData[d].s1:null);
-
 function buildOptions(autoSkip){
   return{
     responsive:true, maintainAspectRatio:false,
-    interaction:{mode:'index', intersect:false},
+    interaction:{mode:'index',intersect:false},
     plugins:{
       legend:{display:false},
       tooltip:{
-        enabled: !isTouch, // スマホではツールチップ無効・パネルで代替
+        enabled:!isTouch,
         callbacks:{
           label:(ctx)=>{
             if(ctx.raw===null)return null;
@@ -225,10 +216,10 @@ function buildOptions(autoSkip){
         }
       }
     },
-    onClick: isTouch ? (evt, elements, chart) => {
-      const pts = chart.getElementsAtEventForMode(evt,'index',{intersect:false},true);
+    onClick: isTouch?(evt,elements,chart)=>{
+      const pts=chart.getElementsAtEventForMode(evt,'index',{intersect:false},true);
       if(pts.length>0) updatePanel(pts[0].index);
-    } : undefined,
+    }:undefined,
     scales:{
       x:{ticks:{autoSkip,maxRotation:45,font:{size:13,weight:'500'},color:'#2C2C2A'},grid:{display:false}},
       yLeft:{type:'linear',position:'left',min:0,max:30,
@@ -247,9 +238,9 @@ new Chart(document.getElementById('chartFit'),   {type:'bar',data:{labels:allDat
 new Chart(document.getElementById('chartScroll'),{type:'bar',data:{labels:allDates,datasets:buildDatasets()},options:buildOptions(false)});
 
 function setMode(mode){
-  document.getElementById('wrapFit').style.display    = mode==='fit'    ? 'block':'none';
-  document.getElementById('wrapScroll').style.display = mode==='scroll' ? 'block':'none';
-  document.getElementById('btnFit').className    = 'mode-btn'+(mode==='fit'    ?' active':'');
+  document.getElementById('wrapFit').style.display    = mode==='fit'?'block':'none';
+  document.getElementById('wrapScroll').style.display = mode==='scroll'?'block':'none';
+  document.getElementById('btnFit').className    = 'mode-btn'+(mode==='fit'?' active':'');
   document.getElementById('btnScroll').className = 'mode-btn'+(mode==='scroll'?' active':'');
   document.getElementById('modeDesc').textContent = mode==='fit'
     ? '📱 狭い画面では日付を自動で間引いて全体を表示します。'
