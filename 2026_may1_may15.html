@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ギンザケ日計表 2026年5/1〜5/15</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Hiragino Sans', 'Noto Sans JP', sans-serif; background: #F4F6F8; color: #2C2C2A; min-height: 100vh; }
+  header { background: #1B2A3B; color: #fff; padding: 14px 16px; border-bottom: 3px solid #378ADD; display: flex; align-items: center; gap: 10px; }
+  .header-back { display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.12); border-radius: 6px; width: 34px; height: 34px; text-decoration: none; color: #fff; font-size: 20px; flex-shrink: 0; }
+  .header-back:hover { background: rgba(255,255,255,0.22); }
+  header h1 { font-size: 15px; font-weight: 700; line-height: 1.3; }
+  header p { font-size: 11px; color: #A0B4C8; }
+  .nav-bar { display: flex; align-items: center; justify-content: space-between; background: #fff; border-bottom: 1px solid #E2E8EF; padding: 10px 16px; }
+  .nav-btn { font-size: 13px; font-weight: 600; color: #378ADD; text-decoration: none; padding: 6px 12px; border-radius: 6px; border: 1.5px solid #378ADD; background: #fff; transition: background 0.15s, color 0.15s; white-space: nowrap; }
+  .nav-btn:hover { background: #378ADD; color: #fff; }
+  .nav-btn.disabled { color: #C0CAD4; border-color: #C0CAD4; pointer-events: none; }
+  .nav-center { font-size: 12px; color: #8A97A6; text-align: center; flex: 1; padding: 0 8px; }
+  .chart-card { background: #fff; border-radius: 12px; border: 1px solid #E2E8EF; margin: 16px 16px 8px; padding: 16px 12px 12px; }
+  .chart-title { font-size: 14px; font-weight: bold; color: #2C2C2A; margin-bottom: 10px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 10px 14px; margin-bottom: 12px; font-size: 12px; color: #2C2C2A; align-items: center; }
+  .legend span { display: flex; align-items: center; gap: 5px; }
+  .mode-toggle { display: flex; gap: 6px; margin-bottom: 10px; }
+  .mode-btn { font-size: 12px; padding: 4px 12px; border-radius: 20px; border: 1.5px solid #378ADD; cursor: pointer; background: #fff; color: #378ADD; font-weight: 600; transition: background 0.15s, color 0.15s; }
+  .mode-btn.active { background: #378ADD; color: #fff; }
+  .mode-desc { font-size: 11px; color: #8A97A6; margin-bottom: 8px; min-height: 16px; }
+  #wrapFit { position: relative; width: 100%; height: 400px; }
+  #wrapScroll { display: none; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 6px; }
+  #wrapScroll .inner { width: 860px; height: 400px; position: relative; }
+  .scroll-hint { font-size: 11px; color: #999; text-align: center; padding: 4px 0; }
+  .note { font-size: 11px; color: #9AA4AF; margin: 8px 16px 0; line-height: 1.6; }
+  footer { text-align: center; font-size: 11px; color: #AAB4BF; padding: 24px 16px; }
+  #touchPanel { display: none; position: fixed; bottom: 0; left: 0; right: 0; max-height: 30vh; background: #1B2A3B; border-top: 3px solid #378ADD; z-index: 100; flex-direction: column; }
+  #touchPanel .panel-header { flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 8px 14px 6px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  #touchPanel .panel-date { font-size: 14px; font-weight: 700; color: #7EC8F4; }
+  #touchPanel .panel-hint { font-size: 10px; color: #4A6880; }
+  #touchPanel .panel-body { overflow-y: auto; -webkit-overflow-scrolling: touch; flex: 1; padding: 4px 0 8px; }
+  #touchPanel .panel-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 16px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  #touchPanel .panel-row:last-child { border-bottom: none; }
+  #touchPanel .panel-label { font-size: 13px; color: #A0B4C8; }
+  #touchPanel .panel-value { font-size: 13px; font-weight: 700; color: #fff; }
+  @media (pointer: coarse) { body { padding-bottom: 120px; } }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="header-back" href="index.html">‹</a>
+  <div>
+    <h1>石巻魚市場 ギンザケ日計表</h1>
+    <p>2026年 5/1〜5/15</p>
+  </div>
+</header>
+
+<div class="nav-bar">
+  <a class="nav-btn" href="2026_apr15_may15.html">‹ 前の期間</a>
+  <div class="nav-center">2 / 2</div>
+  <a class="nav-btn disabled" href="#">次の期間 ›</a>
+</div>
+
+<div class="chart-card">
+  <p class="chart-title">石巻魚市場 ギンザケ日計表 2026年5/1〜5/15</p>
+  <div class="legend">
+    <span><span style="width:22px;height:12px;border-radius:2px;background:#B5D4F4;border:1px solid #378ADD;display:inline-block;flex-shrink:0;"></span>合計数量（左軸）</span>
+    <span><svg width="30" height="12"><line x1="0" y1="6" x2="30" y2="6" stroke="#534AB7" stroke-width="2.5"/><circle cx="15" cy="6" r="4" fill="#534AB7"/></svg>全体平均単価</span>
+    <span><svg width="30" height="12"><line x1="0" y1="6" x2="30" y2="6" stroke="#E8A020" stroke-width="2.5"/><circle cx="15" cy="6" r="4" fill="#E8A020"/></svg>2.5k上</span>
+    <span><svg width="30" height="12"><line x1="0" y1="6" x2="30" y2="6" stroke="#D85A30" stroke-width="2.5"/><circle cx="15" cy="6" r="4" fill="#D85A30"/></svg>2k上</span>
+    <span><svg width="30" height="12"><line x1="0" y1="6" x2="30" y2="6" stroke="#1D9E75" stroke-width="2.5"/><circle cx="15" cy="6" r="4" fill="#1D9E75"/></svg>1.5k上</span>
+    <span><svg width="30" height="12"><line x1="0" y1="6" x2="30" y2="6" stroke="#D4537E" stroke-width="2.5"/><circle cx="15" cy="6" r="4" fill="#D4537E"/></svg>1k上</span>
+  </div>
+  <div class="mode-toggle">
+    <button class="mode-btn active" id="btnFit" onclick="setMode('fit')">全体表示</button>
+    <button class="mode-btn" id="btnScroll" onclick="setMode('scroll')">横スクロール</button>
+  </div>
+  <p class="mode-desc" id="modeDesc">📱 狭い画面では日付を自動で間引いて全体を表示します。</p>
+  <div id="wrapFit"><canvas id="chartFit"></canvas></div>
+  <div id="wrapScroll">
+    <div class="inner"><canvas id="chartScroll"></canvas></div>
+    <p class="scroll-hint">← 横にスワイプできます →</p>
+  </div>
+</div>
+
+<p class="note">※ 点線は水揚げのなかった日の補間。スレ・次品・0.5k上は折れ線から除外。5/3〜5/6・5/10はデータなし。</p>
+<footer>石巻魚市場 ギンザケ日計表 © 2026</footer>
+
+<div id="touchPanel">
+  <div class="panel-header">
+    <div class="panel-date" id="panelDate">📅 日付をタップ</div>
+    <div class="panel-hint" id="panelHint"></div>
+  </div>
+  <div class="panel-body" id="panelBody">
+    <div class="panel-row"><span class="panel-label">グラフの日付をタップするとデータが表示されます</span></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const allDates = [];
+for(let d=1;d<=15;d++) allDates.push('5/'+d);
+
+const rawData = {
+  '5/1' :{qty:19353, avg:784,  s25k:null, s2k:857,  s15:839,  s1:663},
+  '5/2' :{qty:7574,  avg:824,  s25k:null, s2k:861,  s15:881,  s1:733},
+  '5/7' :{qty:22800, avg:832,  s25k:null, s2k:886,  s15:872,  s1:730},
+  '5/8' :{qty:15384, avg:830,  s25k:null, s2k:852,  s15:850,  s1:733},
+  '5/9' :{qty:13785, avg:818,  s25k:null, s2k:851,  s15:832,  s1:748},
+  '5/11':{qty:8738,  avg:835,  s25k:null, s2k:851,  s15:833,  s1:772},
+  '5/12':{qty:16670, avg:770,  s25k:null, s2k:810,  s15:774,  s1:742},
+  '5/13':{qty:29512, avg:749,  s25k:787,  s2k:769,  s15:730,  s1:688},
+  '5/14':{qty:27873, avg:736,  s25k:790,  s2k:760,  s15:716,  s1:687},
+  '5/15':{qty:37209, avg:735,  s25k:785,  s2k:752,  s15:708,  s1:680},
+};
+
+const isTouch = ('ontouchstart' in window)||(navigator.maxTouchPoints>0);
+if(isTouch) document.getElementById('touchPanel').style.display='flex';
+
+function updatePanel(index){
+  const date=allDates[index];
+  const d=rawData[date];
+  document.getElementById('panelDate').textContent='📅 '+date;
+  const items=[];
+  if(d){
+    items.push(['合計数量', parseFloat((d.qty/1000).toFixed(1))+'t']);
+    items.push(['全体平均単価', d.avg.toLocaleString()+'円/kg']);
+    if(d.s25k) items.push(['2.5k上', d.s25k.toLocaleString()+'円/kg']);
+    if(d.s2k)  items.push(['2k上',   d.s2k.toLocaleString()+'円/kg']);
+    if(d.s15)  items.push(['1.5k上', d.s15.toLocaleString()+'円/kg']);
+    if(d.s1)   items.push(['1k上',   d.s1.toLocaleString()+'円/kg']);
+  } else {
+    items.push(['','水揚げなし']);
+  }
+  document.getElementById('panelHint').textContent=items.length>3?'↕ スクロール':'';
+  document.getElementById('panelBody').innerHTML=items.map(([l,v])=>
+    `<div class="panel-row"><span class="panel-label">${l}</span><span class="panel-value">${v}</span></div>`
+  ).join('');
+}
+
+const qtys = allDates.map(d=>rawData[d]?parseFloat((rawData[d].qty/1000).toFixed(1)):null);
+const avg  = allDates.map(d=>rawData[d]?rawData[d].avg:null);
+const s25k = allDates.map(d=>rawData[d]?rawData[d].s25k:null);
+const s2k  = allDates.map(d=>rawData[d]?rawData[d].s2k:null);
+const s15  = allDates.map(d=>rawData[d]?rawData[d].s15:null);
+const s1   = allDates.map(d=>rawData[d]?rawData[d].s1:null);
+
+function lineDs(label,data,color){
+  return{label,data,type:'line',borderColor:color,backgroundColor:color,borderWidth:2.5,
+    pointRadius:data.map(v=>v!==null?5:0),pointHitRadius:20,
+    pointBackgroundColor:color,spanGaps:true,
+    segment:{borderDash:(ctx)=>{
+      if(data[ctx.p0DataIndex]===null||data[ctx.p1DataIndex]===null)return[6,4];return[];
+    }},tension:0,yAxisID:'yRight',order:1};
+}
+
+function buildDatasets(){
+  return[
+    {label:'合計数量(t)',data:qtys,type:'bar',backgroundColor:'#B5D4F4',borderColor:'#378ADD',borderWidth:0.5,borderRadius:3,yAxisID:'yLeft',order:10},
+    lineDs('全体平均単価',avg,'#534AB7'),
+    lineDs('2.5k上',s25k,'#E8A020'),
+    lineDs('2k上',s2k,'#D85A30'),
+    lineDs('1.5k上',s15,'#1D9E75'),
+    lineDs('1k上',s1,'#D4537E'),
+  ];
+}
+
+function buildOptions(autoSkip){
+  return{
+    responsive:true,maintainAspectRatio:false,
+    interaction:{mode:'index',intersect:false},
+    plugins:{
+      legend:{display:false},
+      tooltip:{enabled:!isTouch,callbacks:{
+        label:(ctx)=>{
+          if(ctx.raw===null)return null;
+          if(ctx.dataset.yAxisID==='yLeft')return' 合計数量: '+ctx.parsed.y.toFixed(1)+'t';
+          return' '+ctx.dataset.label+': '+ctx.parsed.y.toLocaleString()+'円/kg';
+        },
+        filter:(item)=>item.raw!==null,
+      }}
+    },
+    onClick:isTouch?(evt,elements,chart)=>{
+      const pts=chart.getElementsAtEventForMode(evt,'index',{intersect:false},true);
+      if(pts.length>0)updatePanel(pts[0].index);
+    }:undefined,
+    scales:{
+      x:{ticks:{autoSkip,maxRotation:45,font:{size:13,weight:'500'},color:'#2C2C2A'},grid:{display:false}},
+      yLeft:{type:'linear',position:'left',min:0,max:50,
+        title:{display:true,text:'合計数量（トン）',font:{size:13,weight:'500'},color:'#2C2C2A'},
+        ticks:{font:{size:13},color:'#2C2C2A',callback:v=>v+'t'},
+        grid:{color:'rgba(80,80,80,0.15)'}},
+      yRight:{type:'linear',position:'right',min:600,max:1500,
+        title:{display:true,text:'平均単価（円/kg）',font:{size:13,weight:'500'},color:'#2C2C2A'},
+        ticks:{font:{size:13},color:'#2C2C2A',callback:v=>v.toLocaleString()+'円'},
+        grid:{display:false}},
+    }
+  };
+}
+
+new Chart(document.getElementById('chartFit'),   {type:'bar',data:{labels:allDates,datasets:buildDatasets()},options:buildOptions(true)});
+new Chart(document.getElementById('chartScroll'),{type:'bar',data:{labels:allDates,datasets:buildDatasets()},options:buildOptions(false)});
+
+function setMode(mode){
+  document.getElementById('wrapFit').style.display    =mode==='fit'?'block':'none';
+  document.getElementById('wrapScroll').style.display =mode==='scroll'?'block':'none';
+  document.getElementById('btnFit').className    ='mode-btn'+(mode==='fit'?' active':'');
+  document.getElementById('btnScroll').className ='mode-btn'+(mode==='scroll'?' active':'');
+  document.getElementById('modeDesc').textContent=mode==='fit'
+    ?'📱 狭い画面では日付を自動で間引いて全体を表示します。'
+    :'📱 グラフを横にスワイプして全日付を確認できます。';
+}
+</script>
+</body>
+</html>

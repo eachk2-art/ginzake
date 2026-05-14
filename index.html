@@ -6,109 +6,55 @@
 <title>石巻魚市場 ギンザケ日計表</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'Hiragino Sans', 'Noto Sans JP', sans-serif;
-    background: #F4F6F8;
-    color: #2C2C2A;
-    min-height: 100vh;
-  }
-
-  header {
-    background: #1B2A3B;
-    color: #fff;
-    padding: 20px 24px;
-    border-bottom: 3px solid #378ADD;
-  }
+  body { font-family: 'Hiragino Sans', 'Noto Sans JP', sans-serif; background: #F4F6F8; color: #2C2C2A; min-height: 100vh; }
+  header { background: #1B2A3B; color: #fff; padding: 20px 24px; border-bottom: 3px solid #378ADD; }
   header h1 { font-size: 18px; font-weight: 700; letter-spacing: 0.04em; }
   header p { font-size: 12px; color: #A0B4C8; margin-top: 4px; }
-
-  main {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 24px 16px 60px;
-  }
-
-  .section-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: #6B7A8D;
-    letter-spacing: 0.08em;
-    margin-bottom: 12px;
-    padding-left: 4px;
-  }
-
-  .graph-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .graph-card {
-    display: flex;
-    align-items: center;
-    background: #fff;
-    border-radius: 10px;
-    border: 1px solid #E2E8EF;
-    text-decoration: none;
-    color: inherit;
-    padding: 16px 20px;
-    transition: box-shadow 0.18s, border-color 0.18s, transform 0.15s;
-    position: relative;
-    overflow: hidden;
-  }
-  .graph-card::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 4px;
-    background: #378ADD;
-    border-radius: 10px 0 0 10px;
-  }
-  .graph-card:hover {
-    box-shadow: 0 4px 16px rgba(55,138,221,0.13);
-    border-color: #378ADD;
-    transform: translateY(-1px);
-  }
+  main { max-width: 720px; margin: 0 auto; padding: 24px 16px 60px; }
+  .section-title { font-size: 13px; font-weight: 600; color: #6B7A8D; letter-spacing: 0.08em; margin-bottom: 12px; padding-left: 4px; }
+  .graph-list { display: flex; flex-direction: column; gap: 10px; }
+  .graph-card { display: flex; align-items: center; background: #fff; border-radius: 10px; border: 1px solid #E2E8EF; text-decoration: none; color: inherit; padding: 16px 20px; transition: box-shadow 0.18s, border-color 0.18s, transform 0.15s; position: relative; overflow: hidden; }
+  .graph-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: #378ADD; border-radius: 10px 0 0 10px; }
+  .graph-card:hover { box-shadow: 0 4px 16px rgba(55,138,221,0.13); border-color: #378ADD; transform: translateY(-1px); }
   .graph-card:active { transform: translateY(0); }
-
   .card-body { flex: 1; padding-left: 12px; }
   .card-title { font-size: 15px; font-weight: 600; color: #1B2A3B; }
   .card-meta { font-size: 12px; color: #8A97A6; margin-top: 3px; }
   .card-arrow { color: #378ADD; font-size: 20px; flex-shrink: 0; margin-left: 12px; }
-
-  .badge {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 600;
-    padding: 2px 7px;
-    border-radius: 20px;
-    margin-left: 8px;
-    vertical-align: middle;
-  }
+  .badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 20px; margin-left: 8px; vertical-align: middle; }
   .badge-spot  { background: #EAF3FE; color: #378ADD; }
   .badge-month { background: #E8F5F0; color: #1D9E75; }
-
   footer { text-align: center; font-size: 11px; color: #AAB4BF; padding: 20px; }
 </style>
 </head>
 <body>
-
 <header>
   <h1>🐟 石巻魚市場 ギンザケ日計表</h1>
   <p>グラフ一覧 — 日付の新しい順</p>
 </header>
-
 <main>
   <p class="section-title">グラフ一覧</p>
   <div class="graph-list">
 
+    <a class="graph-card" href="2026_may1_may15.html">
+      <div class="card-body">
+        <div class="card-title">2026年 5/1〜5/15<span class="badge badge-spot">スポット</span></div>
+        <div class="card-meta">水揚げ10日間 ／ 最大 37.2t（5/15）</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </a>
+
+    <a class="graph-card" href="2026_apr15_may15.html">
+      <div class="card-body">
+        <div class="card-title">2026年 4/15〜5/15<span class="badge badge-spot">スポット</span></div>
+        <div class="card-meta">水揚げ22日間 ／ 最大 37.2t（5/15）</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </a>
+
     <a class="graph-card" href="2026_apr14_may3.html">
       <div class="card-body">
-        <div class="card-title">
-          2026年 4/14〜5/3
-          <span class="badge badge-spot">スポット</span>
-        </div>
+        <div class="card-title">2026年 4/14〜5/3<span class="badge badge-spot">スポット</span></div>
         <div class="card-meta">水揚げ14日間 ／ 最大 19.7t（4/28）</div>
       </div>
       <div class="card-arrow">›</div>
@@ -116,10 +62,7 @@
 
     <a class="graph-card" href="2026_apr01_apr30.html">
       <div class="card-body">
-        <div class="card-title">
-          2026年 4月
-          <span class="badge badge-month">月全体</span>
-        </div>
+        <div class="card-title">2026年 4月<span class="badge badge-month">月全体</span></div>
         <div class="card-meta">水揚げ12日間 ／ データ開始 4/15</div>
       </div>
       <div class="card-arrow">›</div>
@@ -127,8 +70,6 @@
 
   </div>
 </main>
-
 <footer>石巻魚市場 ギンザケ日計表 © 2026</footer>
-
 </body>
 </html>
