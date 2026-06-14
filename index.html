@@ -3,89 +3,388 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>石巻魚市場 ギンザケ日計表</title>
+<title>石巻魚市場 ギンザケ日計グラフ</title>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Hiragino Sans', 'Noto Sans JP', sans-serif; background: #F4F6F8; color: #2C2C2A; min-height: 100vh; }
-  header { background: #1B2A3B; color: #fff; padding: 20px 24px; border-bottom: 3px solid #378ADD; }
-  header h1 { font-size: 18px; font-weight: 700; letter-spacing: 0.04em; }
-  header p { font-size: 12px; color: #A0B4C8; margin-top: 4px; }
-  main { max-width: 720px; margin: 0 auto; padding: 24px 16px 60px; }
-  .section-title { font-size: 13px; font-weight: 600; color: #6B7A8D; letter-spacing: 0.08em; margin-bottom: 12px; padding-left: 4px; }
-  .graph-list { display: flex; flex-direction: column; gap: 10px; }
-  .graph-card { display: flex; align-items: center; background: #fff; border-radius: 10px; border: 1px solid #E2E8EF; text-decoration: none; color: inherit; padding: 16px 20px; transition: box-shadow 0.18s, border-color 0.18s, transform 0.15s; position: relative; overflow: hidden; }
-  .graph-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: #378ADD; border-radius: 10px 0 0 10px; }
-  .graph-card:hover { box-shadow: 0 4px 16px rgba(55,138,221,0.13); border-color: #378ADD; transform: translateY(-1px); }
-  .graph-card:active { transform: translateY(0); }
-  .card-body { flex: 1; padding-left: 12px; }
-  .card-title { font-size: 15px; font-weight: 600; color: #1B2A3B; }
-  .card-meta { font-size: 12px; color: #8A97A6; margin-top: 3px; }
-  .card-arrow { color: #378ADD; font-size: 20px; flex-shrink: 0; margin-left: 12px; }
-  .badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 20px; margin-left: 8px; vertical-align: middle; }
-  .badge-spot  { background: #EAF3FE; color: #378ADD; }
-  .badge-month { background: #E8F5F0; color: #1D9E75; }
-  footer { text-align: center; font-size: 11px; color: #AAB4BF; padding: 20px; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Hiragino Sans', 'Meiryo', sans-serif;
+    background: #F0F4F8;
+    color: #2C2C2A;
+    min-height: 100vh;
+  }
+
+  /* ヘッダー */
+  header {
+    background: #1A3A5C;
+    padding: 20px 24px 16px;
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+  }
+  header .site-title {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    line-height: 1.2;
+  }
+  header .site-sub {
+    color: #B5D4F4;
+    font-size: 12px;
+    font-weight: 400;
+    padding-bottom: 2px;
+  }
+
+  /* メインコンテンツ */
+  main {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 32px 16px 48px;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: #7A8A99;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  /* シーズンカード */
+  .season-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .season-card {
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid #D8E4EF;
+    overflow: hidden;
+    transition: box-shadow 0.15s;
+  }
+  .season-card:hover {
+    box-shadow: 0 4px 16px rgba(26,58,92,0.10);
+  }
+
+  .season-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    cursor: pointer;
+    user-select: none;
+    gap: 12px;
+  }
+
+  .season-card-header:hover {
+    background: #F7FAFD;
+  }
+
+  .season-title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .season-year {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1A3A5C;
+  }
+
+  .season-range {
+    font-size: 13px;
+    color: #7A8A99;
+  }
+
+  .season-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .badge-current {
+    background: #E8F4FF;
+    color: #1A6AAF;
+    border: 1px solid #B5D4F4;
+  }
+  .badge-past {
+    background: #F0F4F0;
+    color: #4A7A4A;
+    border: 1px solid #C8DCC8;
+  }
+
+  .chevron {
+    color: #7A8A99;
+    font-size: 16px;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .season-card.open .chevron {
+    transform: rotate(180deg);
+  }
+
+  /* カード内グラフ一覧 */
+  .season-card-body {
+    display: none;
+    border-top: 1px solid #E8EFF6;
+    padding: 12px 16px 16px;
+  }
+  .season-card.open .season-card-body {
+    display: block;
+  }
+
+  .graph-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .graph-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 7px;
+    text-decoration: none;
+    color: #2C2C2A;
+    transition: background 0.12s;
+  }
+  .graph-item:hover {
+    background: #EEF5FB;
+  }
+
+  .graph-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .badge-month {
+    background: #E6F4EE;
+    color: #2A7A50;
+    border: 1px solid #B8DECA;
+  }
+  .badge-spot {
+    background: #E8F0FB;
+    color: #2A50A0;
+    border: 1px solid #B8C8EE;
+  }
+  .badge-season {
+    background: #FEF3E2;
+    color: #A05A10;
+    border: 1px solid #F0D4A0;
+  }
+
+  .graph-label {
+    font-size: 14px;
+    flex: 1;
+  }
+
+  .graph-arrow {
+    color: #B0BEC8;
+    font-size: 14px;
+  }
+
+  /* 準備中メッセージ */
+  .coming-soon {
+    font-size: 13px;
+    color: #AAB8C4;
+    padding: 8px 12px;
+    font-style: italic;
+  }
+
+  /* フッター */
+  footer {
+    text-align: center;
+    font-size: 12px;
+    color: #AAB8C4;
+    padding: 24px 16px;
+  }
 </style>
 </head>
 <body>
+
 <header>
-  <h1>🐟 石巻魚市場 ギンザケ日計表</h1>
-  <p>グラフ一覧 — 日付の新しい順</p>
-</header>
-<main>
-  <p class="section-title">グラフ一覧</p>
-  <div class="graph-list">
-
-    <a class="graph-card" href="2026_jun01_jun13.html">
-      <div class="card-body">
-        <div class="card-title">2026年 6/1〜6/13<span class="badge badge-spot">スポット</span></div>
-        <div class="card-meta">水揚げ11日間 ／ 最大 122.7t（6/13）</div>
-      </div>
-      <div class="card-arrow">›</div>
-    </a>
-
-    <a class="graph-card" href="2026_may01_may31.html">
-      <div class="card-body">
-        <div class="card-title">2026年 5月<span class="badge badge-month">月全体</span></div>
-        <div class="card-meta">水揚げ20日間 ／ 最大 45.2t（5/30）</div>
-      </div>
-      <div class="card-arrow">›</div>
-    </a>
-
-    <a class="graph-card" href="2026_may1_may15.html">
-      <div class="card-body">
-        <div class="card-title">2026年 5/1〜5/15<span class="badge badge-spot">スポット</span></div>
-        <div class="card-meta">水揚げ10日間 ／ 最大 37.2t（5/15）</div>
-      </div>
-      <div class="card-arrow">›</div>
-    </a>
-
-    <a class="graph-card" href="2026_apr15_may15.html">
-      <div class="card-body">
-        <div class="card-title">2026年 4/15〜5/15<span class="badge badge-spot">スポット</span></div>
-        <div class="card-meta">水揚げ22日間 ／ 最大 37.2t（5/15）</div>
-      </div>
-      <div class="card-arrow">›</div>
-    </a>
-
-    <a class="graph-card" href="2026_apr14_may3.html">
-      <div class="card-body">
-        <div class="card-title">2026年 4/14〜5/3<span class="badge badge-spot">スポット</span></div>
-        <div class="card-meta">水揚げ14日間 ／ 最大 19.7t（4/28）</div>
-      </div>
-      <div class="card-arrow">›</div>
-    </a>
-
-    <a class="graph-card" href="2026_apr01_apr30.html">
-      <div class="card-body">
-        <div class="card-title">2026年 4月<span class="badge badge-month">月全体</span></div>
-        <div class="card-meta">水揚げ12日間 ／ データ開始 4/15</div>
-      </div>
-      <div class="card-arrow">›</div>
-    </a>
-
+  <div>
+    <div class="site-title">石巻魚市場 ギンザケ日計グラフ</div>
+    <div class="site-sub">Ishinomaki Fish Market — Coho Salmon Daily Records</div>
   </div>
+</header>
+
+<main>
+  <div class="section-label">シーズン一覧</div>
+  <div class="season-list">
+
+    <!-- 2026シーズン -->
+    <div class="season-card open" id="card-2026">
+      <div class="season-card-header" onclick="toggleCard('card-2026')">
+        <div class="season-title-row">
+          <span class="season-year">2026年</span>
+          <span class="season-range">3月〜7月</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="season-badge badge-current">今シーズン</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="season-card-body">
+        <div class="graph-list">
+          <a class="graph-item" href="2026_jun01_jun13.html">
+            <span class="graph-badge badge-spot">スポット</span>
+            <span class="graph-label">6/1〜6/13</span>
+            <span class="graph-arrow">›</span>
+          </a>
+          <a class="graph-item" href="2026_may01_may31.html">
+            <span class="graph-badge badge-month">月全体</span>
+            <span class="graph-label">5月</span>
+            <span class="graph-arrow">›</span>
+          </a>
+          <a class="graph-item" href="2026_may1_may15.html">
+            <span class="graph-badge badge-spot">スポット</span>
+            <span class="graph-label">5/1〜5/15</span>
+            <span class="graph-arrow">›</span>
+          </a>
+          <a class="graph-item" href="2026_apr15_may15.html">
+            <span class="graph-badge badge-spot">スポット</span>
+            <span class="graph-label">4/15〜5/15</span>
+            <span class="graph-arrow">›</span>
+          </a>
+          <a class="graph-item" href="2026_apr14_may3.html">
+            <span class="graph-badge badge-spot">スポット</span>
+            <span class="graph-label">4/14〜5/3</span>
+            <span class="graph-arrow">›</span>
+          </a>
+          <a class="graph-item" href="2026_apr01_apr30.html">
+            <span class="graph-badge badge-month">月全体</span>
+            <span class="graph-label">4月</span>
+            <span class="graph-arrow">›</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2025シーズン -->
+    <div class="season-card" id="card-2025">
+      <div class="season-card-header" onclick="toggleCard('card-2025')">
+        <div class="season-title-row">
+          <span class="season-year">2025年</span>
+          <span class="season-range">3月〜7月</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="season-badge badge-past">過去</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="season-card-body">
+        <div class="graph-list">
+          <p class="coming-soon">グラフ準備中…</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2024シーズン -->
+    <div class="season-card" id="card-2024">
+      <div class="season-card-header" onclick="toggleCard('card-2024')">
+        <div class="season-title-row">
+          <span class="season-year">2024年</span>
+          <span class="season-range">3月〜7月</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="season-badge badge-past">過去</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="season-card-body">
+        <div class="graph-list">
+          <p class="coming-soon">グラフ準備中…</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2023シーズン -->
+    <div class="season-card" id="card-2023">
+      <div class="season-card-header" onclick="toggleCard('card-2023')">
+        <div class="season-title-row">
+          <span class="season-year">2023年</span>
+          <span class="season-range">3月〜7月</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="season-badge badge-past">過去</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="season-card-body">
+        <div class="graph-list">
+          <p class="coming-soon">グラフ準備中…</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2022シーズン -->
+    <div class="season-card" id="card-2022">
+      <div class="season-card-header" onclick="toggleCard('card-2022')">
+        <div class="season-title-row">
+          <span class="season-year">2022年</span>
+          <span class="season-range">3月〜7月</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="season-badge badge-past">過去</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="season-card-body">
+        <div class="graph-list">
+          <a class="graph-item" href="2022_jul01_jul31.html">
+            <span class="graph-badge badge-month">月全体</span>
+            <span class="graph-label">7月</span>
+            <span class="graph-arrow">›</span>
+          </a>
+          <a class="graph-item" href="2022_jun01_jun30.html">
+            <span class="graph-badge badge-month">月全体</span>
+            <span class="graph-label">6月</span>
+            <span class="graph-arrow">›</span>
+          </a>
+          <a class="graph-item" href="2022_may01_may31.html">
+            <span class="graph-badge badge-month">月全体</span>
+            <span class="graph-label">5月</span>
+            <span class="graph-arrow">›</span>
+          </a>
+          <a class="graph-item" href="2022_apr01_apr30.html">
+            <span class="graph-badge badge-month">月全体</span>
+            <span class="graph-label">4月</span>
+            <span class="graph-arrow">›</span>
+          </a>
+          <a class="graph-item" href="2022_mar01_mar31.html">
+            <span class="graph-badge badge-month">月全体</span>
+            <span class="graph-label">3月</span>
+            <span class="graph-arrow">›</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /season-list -->
 </main>
-<footer>石巻魚市場 ギンザケ日計表 © 2026</footer>
+
+<footer>
+  石巻魚市場 ギンザケ日計グラフ — データ出所：石巻魚市場日計表
+</footer>
+
+<script>
+  function toggleCard(id) {
+    const card = document.getElementById(id);
+    card.classList.toggle('open');
+  }
+</script>
+
 </body>
 </html>
