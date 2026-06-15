@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>石巻魚市場 ギンザケ日計表 2023年5月</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Hiragino Sans','Meiryo',sans-serif;background:#F8FAFB;color:#2C2C2A;}
+.page-wrap{max-width:1100px;margin:0 auto;padding:16px 12px 32px;}
+.nav-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px;flex-wrap:wrap;}
+.nav-btn{padding:6px 14px;font-size:13px;border:1px solid #B0C4D8;border-radius:6px;background:#fff;color:#1A3A5C;cursor:pointer;}
+.nav-btn:disabled{color:#B0B8C0;cursor:default;}
+.nav-btn:not(:disabled):hover{background:#EEF4FB;}
+.back-btn{padding:6px 14px;font-size:13px;border:1px solid #B0C4D8;border-radius:6px;background:#fff;color:#1A3A5C;cursor:pointer;}
+.back-btn:hover{background:#EEF4FB;}
+.chart-title{font-size:14px;font-weight:700;color:#2C2C2A;margin-bottom:8px;}
+.legend{display:flex;flex-wrap:wrap;gap:4px 0;font-size:13px;color:#2C2C2A;margin-bottom:8px;align-items:center;}
+.mode-row{display:flex;gap:8px;margin-bottom:8px;}
+.mode-btn{padding:5px 12px;font-size:12px;border:1px solid #B0C4D8;border-radius:6px;background:#fff;color:#1A3A5C;cursor:pointer;}
+.mode-btn.active{background:#1A3A5C;color:#fff;border-color:#1A3A5C;}
+.chart-outer{position:relative;width:100%;}
+.chart-container{position:relative;height:400px;}
+.note{font-size:12px;color:#888;margin-top:8px;}
+#touch-panel{display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #B5D4F4;padding:10px 14px;max-height:30vh;overflow-y:auto;z-index:100;font-size:13px;}
+#touch-panel .tp-date{font-weight:700;margin-bottom:4px;color:#1A3A5C;}
+#touch-panel .tp-row{display:flex;align-items:center;gap:8px;padding:2px 0;}
+#touch-panel .tp-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+#touch-panel .tp-close{position:absolute;top:8px;right:12px;font-size:18px;color:#888;cursor:pointer;line-height:1;}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+  <div class="nav-row">
+    <button onclick="location.href='2023_apr01_apr30.html'" class="nav-btn">← 4月</button>
+    <button class="back-btn" onclick="location.href='index_2023.html'">一覧に戻る</button>
+    <button onclick="location.href='2023_jun01_jun30.html'" class="nav-btn">6月 →</button>
+  </div>
+  <div class="chart-title">石巻魚市場 ギンザケ日計表 2023年5月</div>
+  <div class="legend"><span style="display:inline-flex;align-items:center;gap:4px;margin-right:12px;"><span style="display:inline-block;width:14px;height:14px;background:#B5D4F4;border:1.5px solid #378ADD;border-radius:2px;"></span><span>合計数量（左軸）</span></span><span style="display:inline-flex;align-items:center;gap:4px;margin-right:12px;"><svg width="32" height="14" style="overflow:visible"><line x1="0" y1="7" x2="32" y2="7" stroke="#7B3FA0" stroke-width="2.5"/><circle cx="16" cy="7" r="5" fill="#7B3FA0"/></svg><span>3k上</span></span><span style="display:inline-flex;align-items:center;gap:4px;margin-right:12px;"><svg width="32" height="14" style="overflow:visible"><line x1="0" y1="7" x2="32" y2="7" stroke="#E8A020" stroke-width="2.5"/><circle cx="16" cy="7" r="5" fill="#E8A020"/></svg><span>2.5k上</span></span><span style="display:inline-flex;align-items:center;gap:4px;margin-right:12px;"><svg width="32" height="14" style="overflow:visible"><line x1="0" y1="7" x2="32" y2="7" stroke="#D85A30" stroke-width="2.5"/><circle cx="16" cy="7" r="5" fill="#D85A30"/></svg><span>2k上</span></span><span style="display:inline-flex;align-items:center;gap:4px;margin-right:12px;"><svg width="32" height="14" style="overflow:visible"><line x1="0" y1="7" x2="32" y2="7" stroke="#1D9E75" stroke-width="2.5"/><circle cx="16" cy="7" r="5" fill="#1D9E75"/></svg><span>1.5k上</span></span><span style="display:inline-flex;align-items:center;gap:4px;margin-right:12px;"><svg width="32" height="14" style="overflow:visible"><line x1="0" y1="7" x2="32" y2="7" stroke="#D4537E" stroke-width="2.5"/><circle cx="16" cy="7" r="5" fill="#D4537E"/></svg><span>1k上</span></span><span style="display:inline-flex;align-items:center;gap:4px;margin-right:12px;"><svg width="32" height="14" style="overflow:visible"><line x1="0" y1="7" x2="32" y2="7" stroke="#534AB7" stroke-width="2.5"/><circle cx="16" cy="7" r="5" fill="#534AB7"/></svg><span>全体平均単価</span></span></div>
+  <div class="mode-row">
+    <button class="mode-btn active" id="btn-full" onclick="setMode('full')">全体表示</button>
+    <button class="mode-btn" id="btn-scroll" onclick="setMode('scroll')">横スクロール</button>
+  </div>
+  <div class="chart-outer" id="chart-outer">
+    <div class="chart-container" id="chart-container">
+      <canvas id="myChart"></canvas>
+    </div>
+  </div>
+  <div class="note">※ 点線は水揚げのなかった日の補間。スレ・次品・0.5k上は折れ線から除外。</div>
+</div>
+<div id="touch-panel">
+  <span class="tp-close" onclick="document.getElementById('touch-panel').style.display='none'">✕</span>
+  <div id="tp-content"></div>
+</div>
+<script>
+const isTouch = ('ontouchstart' in window)||(navigator.maxTouchPoints>0);
+const labels = ["5/1", "5/2", "5/3", "5/4", "5/5", "5/6", "5/7", "5/8", "5/9", "5/10", "5/11", "5/12", "5/13", "5/14", "5/15", "5/16", "5/17", "5/18", "5/19", "5/20", "5/21", "5/22", "5/23", "5/24", "5/25", "5/26", "5/27", "5/28", "5/29", "5/30", "5/31"];
+const datasets = [{
+        type: 'bar',
+        label: '合計数量',
+        data: [44.2, 38.14, 40.53, null, null, null, null, 10.55, 53.99, 48.89, 43.24, 38.52, 52.32, null, 53.13, 42.54, null, 52.68, 51.26, 57.5, null, 68.12, 68.95, 57.12, 72.96, 54.42, 75.28, null, 86.93, 78.06, 57.74],
+        backgroundColor: '#B5D4F4',
+        borderColor: '#378ADD',
+        borderWidth: 1,
+        yAxisID: 'yLeft',
+        order: 10
+      },
+      {
+        type: 'line',
+        label: '3k上',
+        data: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 717, 717, 717, null, 712, 702, 700],
+        borderColor: '#7B3FA0',
+        backgroundColor: '#7B3FA0',
+        pointBackgroundColor: '#7B3FA0',
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        borderWidth: 2.5,
+        yAxisID: 'yRight',
+        spanGaps: true,
+        segment: {
+          borderDash: ctx => {
+            const i = ctx.p0DataIndex;
+            return ([null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 717, 717, 717, null, 712, 702, 700][i]===null || [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 717, 717, 717, null, 712, 702, 700][i+1]===null) ? [5,4] : [];
+          }
+        },
+        pointStyle: ctx => [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 717, 717, 717, null, 712, 702, 700][ctx.dataIndex] !== null ? 'circle' : false,
+        order: 1
+      },
+      {
+        type: 'line',
+        label: '2.5k上',
+        data: [783, 748, 721, null, null, null, null, 885, 734, 705, 733, 721, 721, null, 711, 727, null, 722, 722, 706, null, 707, 712, 717, 708, 720, 716, null, 704, 701, 711],
+        borderColor: '#E8A020',
+        backgroundColor: '#E8A020',
+        pointBackgroundColor: '#E8A020',
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        borderWidth: 2.5,
+        yAxisID: 'yRight',
+        spanGaps: true,
+        segment: {
+          borderDash: ctx => {
+            const i = ctx.p0DataIndex;
+            return ([783, 748, 721, null, null, null, null, 885, 734, 705, 733, 721, 721, null, 711, 727, null, 722, 722, 706, null, 707, 712, 717, 708, 720, 716, null, 704, 701, 711][i]===null || [783, 748, 721, null, null, null, null, 885, 734, 705, 733, 721, 721, null, 711, 727, null, 722, 722, 706, null, 707, 712, 717, 708, 720, 716, null, 704, 701, 711][i+1]===null) ? [5,4] : [];
+          }
+        },
+        pointStyle: ctx => [783, 748, 721, null, null, null, null, 885, 734, 705, 733, 721, 721, null, 711, 727, null, 722, 722, 706, null, 707, 712, 717, 708, 720, 716, null, 704, 701, 711][ctx.dataIndex] !== null ? 'circle' : false,
+        order: 1
+      },
+      {
+        type: 'line',
+        label: '2k上',
+        data: [762, 750, 709, null, null, null, null, 865, 712, 703, 708, 710, 709, null, 702, 721, null, 713, 712, 704, null, 707, 709, 710, 708, 717, 705, null, 705, 700, 710],
+        borderColor: '#D85A30',
+        backgroundColor: '#D85A30',
+        pointBackgroundColor: '#D85A30',
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        borderWidth: 2.5,
+        yAxisID: 'yRight',
+        spanGaps: true,
+        segment: {
+          borderDash: ctx => {
+            const i = ctx.p0DataIndex;
+            return ([762, 750, 709, null, null, null, null, 865, 712, 703, 708, 710, 709, null, 702, 721, null, 713, 712, 704, null, 707, 709, 710, 708, 717, 705, null, 705, 700, 710][i]===null || [762, 750, 709, null, null, null, null, 865, 712, 703, 708, 710, 709, null, 702, 721, null, 713, 712, 704, null, 707, 709, 710, 708, 717, 705, null, 705, 700, 710][i+1]===null) ? [5,4] : [];
+          }
+        },
+        pointStyle: ctx => [762, 750, 709, null, null, null, null, 865, 712, 703, 708, 710, 709, null, 702, 721, null, 713, 712, 704, null, 707, 709, 710, 708, 717, 705, null, 705, 700, 710][ctx.dataIndex] !== null ? 'circle' : false,
+        order: 1
+      },
+      {
+        type: 'line',
+        label: '1.5k上',
+        data: [754, 728, 678, null, null, null, null, 975, 697, 674, 672, 690, 686, null, 669, 707, null, 688, 683, 697, null, 678, 692, 681, 692, 695, 662, null, 663, 679, 698],
+        borderColor: '#1D9E75',
+        backgroundColor: '#1D9E75',
+        pointBackgroundColor: '#1D9E75',
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        borderWidth: 2.5,
+        yAxisID: 'yRight',
+        spanGaps: true,
+        segment: {
+          borderDash: ctx => {
+            const i = ctx.p0DataIndex;
+            return ([754, 728, 678, null, null, null, null, 975, 697, 674, 672, 690, 686, null, 669, 707, null, 688, 683, 697, null, 678, 692, 681, 692, 695, 662, null, 663, 679, 698][i]===null || [754, 728, 678, null, null, null, null, 975, 697, 674, 672, 690, 686, null, 669, 707, null, 688, 683, 697, null, 678, 692, 681, 692, 695, 662, null, 663, 679, 698][i+1]===null) ? [5,4] : [];
+          }
+        },
+        pointStyle: ctx => [754, 728, 678, null, null, null, null, 975, 697, 674, 672, 690, 686, null, 669, 707, null, 688, 683, 697, null, 678, 692, 681, 692, 695, 662, null, 663, 679, 698][ctx.dataIndex] !== null ? 'circle' : false,
+        order: 1
+      },
+      {
+        type: 'line',
+        label: '1k上',
+        data: [538, 590, 600, null, null, null, null, 800, 708, 570, 569, 600, 598, null, 630, 708, null, 640, 607, 640, null, 554, 600, 580, 610, 641, 519, null, 518, 549, 573],
+        borderColor: '#D4537E',
+        backgroundColor: '#D4537E',
+        pointBackgroundColor: '#D4537E',
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        borderWidth: 2.5,
+        yAxisID: 'yRight',
+        spanGaps: true,
+        segment: {
+          borderDash: ctx => {
+            const i = ctx.p0DataIndex;
+            return ([538, 590, 600, null, null, null, null, 800, 708, 570, 569, 600, 598, null, 630, 708, null, 640, 607, 640, null, 554, 600, 580, 610, 641, 519, null, 518, 549, 573][i]===null || [538, 590, 600, null, null, null, null, 800, 708, 570, 569, 600, 598, null, 630, 708, null, 640, 607, 640, null, 554, 600, 580, 610, 641, 519, null, 518, 549, 573][i+1]===null) ? [5,4] : [];
+          }
+        },
+        pointStyle: ctx => [538, 590, 600, null, null, null, null, 800, 708, 570, 569, 600, 598, null, 630, 708, null, 640, 607, 640, null, 554, 600, 580, 610, 641, 519, null, 518, 549, 573][ctx.dataIndex] !== null ? 'circle' : false,
+        order: 1
+      },
+      {
+        type: 'line',
+        label: '全体平均単価',
+        data: [756, 742, 699, null, null, null, null, 930, 708, 685, 683, 705, 703, null, 692, 718, null, 705, 704, 701, null, 693, 705, 707, 703, 710, 691, null, 693, 692, 698],
+        borderColor: '#534AB7',
+        backgroundColor: '#534AB7',
+        pointBackgroundColor: '#534AB7',
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        borderWidth: 2.5,
+        yAxisID: 'yRight',
+        spanGaps: true,
+        segment: {
+          borderDash: ctx => {
+            const i = ctx.p0DataIndex;
+            return ([756, 742, 699, null, null, null, null, 930, 708, 685, 683, 705, 703, null, 692, 718, null, 705, 704, 701, null, 693, 705, 707, 703, 710, 691, null, 693, 692, 698][i]===null || [756, 742, 699, null, null, null, null, 930, 708, 685, 683, 705, 703, null, 692, 718, null, 705, 704, 701, null, 693, 705, 707, 703, 710, 691, null, 693, 692, 698][i+1]===null) ? [5,4] : [];
+          }
+        },
+        pointStyle: ctx => [756, 742, 699, null, null, null, null, 930, 708, 685, 683, 705, 703, null, 692, 718, null, 705, 704, 701, null, 693, 705, 707, 703, 710, 691, null, 693, 692, 698][ctx.dataIndex] !== null ? 'circle' : false,
+        order: 1
+      }];
+const ctx = document.getElementById('myChart').getContext('2d');
+const chart = new Chart(ctx, {
+  data: {labels, datasets},
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: {mode:'index', intersect:false},
+    plugins: {
+      legend: {display:false},
+      tooltip: {
+        enabled: !isTouch,
+        callbacks: {
+          label: ctx => {
+            if(ctx.parsed.y===null) return null;
+            if(ctx.dataset.type==='bar') return '合計数量: '+ctx.parsed.y.toFixed(1)+'t';
+            return ctx.dataset.label+': '+ctx.parsed.y.toLocaleString()+'円/kg';
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        ticks: {autoSkip:false, maxRotation:45, minRotation:45, font:{size:13,weight:'500'}, color:'#2C2C2A'},
+        grid: {color:'#E8EEF4'}
+      },
+      yLeft: {
+        type:'linear', position:'left', min:0, max:150,
+        title: {display:true, text:'合計数量（トン）', font:{size:13,weight:'500'}, color:'#2C2C2A'},
+        ticks: {font:{size:13}, color:'#2C2C2A', callback: v => v+'t'},
+        grid: {color:'#E8EEF4'}
+      },
+      yRight: {
+        type:'linear', position:'right', min:500, max:1000,
+        title: {display:true, text:'平均単価（円/kg）', font:{size:13,weight:'500'}, color:'#2C2C2A'},
+        ticks: {font:{size:13}, color:'#2C2C2A', callback: v => v.toLocaleString()+'円'},
+        grid: {drawOnChartArea:false}
+      }
+    }
+  }
+});
+if(isTouch){
+  document.getElementById('myChart').addEventListener('click', function(e){
+    const pts = chart.getElementsAtEventForMode(e,'index',{intersect:false},true);
+    if(!pts.length) return;
+    const idx = pts[0].index;
+    let html = '<div class="tp-date">'+labels[idx]+'</div>';
+    datasets.forEach(ds => {
+      const val = ds.data[idx];
+      if(val===null||val===undefined) return;
+      const color = ds.borderColor||'#888';
+      if(ds.type==='bar') html += '<div class="tp-row"><span class="tp-dot" style="background:#B5D4F4;border:1px solid #378ADD;border-radius:2px;"></span><span>合計数量: '+val.toFixed(1)+'t</span></div>';
+      else html += '<div class="tp-row"><span class="tp-dot" style="background:'+color+'"></span><span>'+ds.label+': '+val.toLocaleString()+'円/kg</span></div>';
+    });
+    document.getElementById('tp-content').innerHTML = html;
+    document.getElementById('touch-panel').style.display = 'block';
+  });
+}
+function setMode(mode){
+  const outer = document.getElementById('chart-outer');
+  const container = document.getElementById('chart-container');
+  document.getElementById('btn-full').classList.toggle('active', mode==='full');
+  document.getElementById('btn-scroll').classList.toggle('active', mode==='scroll');
+  if(mode==='scroll'){
+    outer.style.overflowX='auto';
+    container.style.width=Math.max(labels.length*28,600)+'px';
+  }else{
+    outer.style.overflowX='';
+    container.style.width='';
+  }
+  chart.resize();
+}
+</script>
+</body>
+</html>
